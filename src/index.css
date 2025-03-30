@@ -1,2 +1,12 @@
 @import "tailwindcss";
 @plugin "daisyui";
+
+
+/* Css */
+.drawer-side {
+    z-index: 50;
+  }
+  .carousel {
+    z-index: 10;
+  }
+  
