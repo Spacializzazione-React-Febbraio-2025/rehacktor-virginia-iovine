@@ -8,18 +8,20 @@ import Footer from '../components/Footer';
 export default function Layout() {
     return (
         <div className="style-layout-system">
-
-            <Sidebar />
-
-            <Header />
-
-            <div className="style-main-content">
-                {/*slot da riempire con la rotta nnidata */}
-                <Outlet />
-            </div>
-
-            <Footer />
-
+        
+        <div className="style-sidebar-filters">
+        <Sidebar />
+        </div>
+        
+        <Header />
+        
+        <div className="style-main-content">
+        {/*slot da riempire con la rotta nnidata */}
+        <Outlet />
+        </div>
+        
+        <Footer />
+        
         </div>
     );
 };
