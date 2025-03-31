@@ -3,6 +3,7 @@ import HomePage from "../pages/HomePage";
 import Layout from "../layout/Layout";
 import ErrorPage from '../pages/error';
 import GenrePage from "../pages/genrepage";
+import GamePage from "../pages/gamepage";
 
 export function Routing() {
     return (
@@ -12,6 +13,7 @@ export function Routing() {
             <Route path="/" element={<HomePage />} />
             <Route path="*" element={<ErrorPage />} />
             <Route path="/games/:genre" element={<GenrePage />} />
+            <Route path="/games/:genre/:id" element={<GamePage />} />
             </Route>
         </Routes>
         </BrowserRouter>

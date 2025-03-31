@@ -46,7 +46,7 @@ export default function GenresDropdown() {
             <summary>Genres</summary>
             {error && <small className="text-red-500">{error}</small>} {/* errore, se c'è */}
             <ul className="p-2">
-                {genres && genres.length > 0 ? (
+                {genres?.length > 0 ? (
                     genres.map((genre) => (
                         <li key={genre.id}>
                             {/* Link per genere */}

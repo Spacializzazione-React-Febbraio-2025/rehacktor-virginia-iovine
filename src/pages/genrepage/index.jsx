@@ -18,16 +18,17 @@ export default function GenrePage() {
                 throw new Error(response.statusText);
             }
             const json = await response.json();
-            setGenres(json.results);
+            setData(json);
             setLoading(false);
         } catch (error) {
             setError(error.message);
-            setGenres(null);
+            setData(null);
             setLoading(false);
         }
     };
 
     useEffect(() => {
+        // console.log("Genere selezionato: ", genre);
         load();
     }, [genre]);
 
@@ -35,15 +36,14 @@ export default function GenrePage() {
     return (
         <>
         <h2>Welcome to {genre} page</h2>
-        {loading && <p>Loading games...</p>}
-            {error && <article>{error}</article>}
-            <div className="grid-games-list">
-            {data && data.results ? (
-                data.results.map((game) => <CardGame key={game.id} game={game} />)
-            ) : (
-                <p>No games available for this genre.</p>
-            )}
+            {data && data.results && (
+            <div className="grid grid-cols-4 gap-4">
+                {data.results.map((game) => (<CardGame key={game.id} game={game} />
+            ))}
         </div>
+    )}
+
+    {data && data.results.length === 0 && <p>No games available for this genre.</p>}
         </>
-    );
+        );
 }
