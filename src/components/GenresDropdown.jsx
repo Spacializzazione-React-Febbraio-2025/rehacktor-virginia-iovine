@@ -7,6 +7,7 @@
 
 
 import { useState, useEffect } from "react";
+import { Link } from 'react-router';
 
 export default function GenresDropdown() {
     const [genres, setGenres] = useState(null);
@@ -35,7 +36,7 @@ export default function GenresDropdown() {
         load();
     }, []);
 
-    // Se stiamo caricando, mostriamo un messaggio di loading
+    // Se sta caricando, mostra un messaggio di loading
     if (loading) {
         return <p>Loading...</p>;
     }
@@ -43,11 +44,14 @@ export default function GenresDropdown() {
     return (
         <details className="dropdown">
             <summary>Genres</summary>
-            {error && <small className="text-red-500">{error}</small>} {/* Mostriamo l'errore se c'è */}
+            {error && <small className="text-red-500">{error}</small>} {/* errore, se c'è */}
             <ul className="p-2">
                 {genres && genres.length > 0 ? (
                     genres.map((genre) => (
-                        <li key={genre.id}>{genre.name}</li>
+                        <li key={genre.id}>
+                            {/* Link per genere */}
+                            <Link to={`/games/${genre.slug}`}>{genre.name}</Link>
+                        </li>
                     ))
                 ) : (
                     <li>No genres available</li> // Fallback se non ci sono generi
@@ -55,4 +59,5 @@ export default function GenresDropdown() {
             </ul>
         </details>
     );
+    
 }
