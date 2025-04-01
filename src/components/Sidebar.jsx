@@ -1,4 +1,5 @@
 import GenresDropdown from "./GenresDropdown";
+import Searchbar from "./Searchbar";
 
 export default function Sidebar() {
     return (
@@ -31,7 +32,7 @@ export default function Sidebar() {
                         </button>
                     </div>
                     <div className="flex-1">
-                        <a className="btn btn-ghost text-xl">daisyUI</a>
+                        <a className="btn btn-ghost text-xl text-lime-400">daisyUI</a>
                     </div>
                 </div>
             </div>
@@ -43,6 +44,13 @@ export default function Sidebar() {
                         <a className="text-lg font-semibold">Generi</a>
                         <GenresDropdown />
                     </li>
+
+                    <li>
+                        <a className="text-lg font-semibold mt-6">Cerca un gioco</a>
+                        <Searchbar />
+                    </li>
+
+
                 </ul>
             </div>
         </div>
