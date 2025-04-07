@@ -11,15 +11,21 @@ export const FormSchema = z.object({
     password: z.string().min(8).regex(passwordRegex, passwordError),
 });
 
+export const FormSchemaLogin = z.object({
+    email: z.string().email(),
+    password: z.string().min(8).regex(passwordRegex, passwordError),
+});
+
 export const ConfirmSchema = FormSchema.refine((data) => data);
 
-export function getFieldError(property, value) {
-    if (!FormSchema.shape[property]) {return undefined;}
-    const { error } = FormSchema.shape[property].safeParse(value);
-    return error
-    ? error.issues.map((issue) => issue.message).join(", ")
-    : undefined;
+export const ConfirmSchemaLogin = FormSchemaLogin.refine((data) => data);
 
+export function getFieldError(schema, property, value) {
+    if (!schema.shape[property]) { return undefined; }
+    const { error } = schema.shape[property].safeParse(value);
+    return error
+        ? error.issues.map((issue) => issue.message).join(", ")
+        : undefined;
 }
 
 export const getErrors = (error) =>

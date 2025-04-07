@@ -1,8 +1,49 @@
+import supabase from "../supabase/supabase-client";
+import { useEffect, useState } from "react";
 import GenresDropdown from "./GenresDropdown";
 import Searchbar from "./Searchbar";
 import { Link } from "react-router";
 
 export default function Sidebar() {
+    const [session, setSession] = useState(null);
+
+    const getSession = async () => {
+        const { data, error } = await supabase.auth.getSession();
+        if (error) {
+            setSession(null);
+        } else {
+            setSession(data.session);
+        }
+    };
+
+    const signOut = async () => {
+        const { error } = await supabase.auth.signOut();
+        if (error) {
+            console.log(error);
+        } else {
+            alert('Signed out 👋🏻');
+            getSession();
+        }
+    };
+
+
+    useEffect(() => {
+        getSession();
+    }, []);
+
+    // aggiorna la sessione quando un utente si autentica o si disconnette
+    useEffect(() => {
+        const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+            // Dopo ogni cambiamento di stato dell'autenticazione, aggiorniamo la sessione
+            setSession(session);
+        });
+
+        // Pulizia del listener
+        return () => {
+            authListener?.unsubscribe();
+        };
+    }, []);
+
     return (
         <div className="drawer">
             <input id="my-drawer" type="checkbox" className="drawer-toggle" />
@@ -52,13 +93,32 @@ export default function Sidebar() {
                     </li>
 
                     <li>
-                        <Link to="#" className="secondary">Login</Link>
+                        <Link to="/login" className="secondary">Login</Link>
                     </li>
 
                     <li>
                         <Link to="/register" className="secondary">Register</Link>
                     </li>
 
+                    {session ? (
+                        <ul>
+                            <li>
+                                <details className="dropdown">
+                                    <summary>Account</summary>
+                                    <ul dir="rtl">
+                                        <li><a href="#">Settings</a></li>
+                                        <li><button onClick={signOut}>Logout</button></li>
+                                    </ul>
+                                </details>
+                            </li>
+                        </ul>
+                    ) : (
+
+                        // messaggio se l'utente non è loggato
+                        <p className="text-center mt-4">Please log in to access your account</p>
+
+                        
+                    )}
                 </ul>
             </div>
         </div>
