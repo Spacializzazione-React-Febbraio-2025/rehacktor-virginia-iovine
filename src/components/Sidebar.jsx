@@ -1,5 +1,6 @@
 import GenresDropdown from "./GenresDropdown";
 import Searchbar from "./Searchbar";
+import { Link } from "react-router";
 
 export default function Sidebar() {
     return (
@@ -50,6 +51,13 @@ export default function Sidebar() {
                         <Searchbar />
                     </li>
 
+                    <li>
+                        <Link to="#" className="secondary">Login</Link>
+                    </li>
+
+                    <li>
+                        <Link to="/register" className="secondary">Register</Link>
+                    </li>
 
                 </ul>
             </div>
