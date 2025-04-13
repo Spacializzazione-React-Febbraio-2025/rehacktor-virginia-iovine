@@ -57,9 +57,9 @@ export default function Sidebar() {
                     ) : (
                         <li>
                             <details className="dropdown">
-                                <summary>Account</summary>
+                                <summary>Hey 👋🏻  {session?.user.user_metadata.first_name} </summary>
                                 <ul dir="rtl">
-                                    <li><a href="#">Settings</a></li>
+                                    <li><Link to="/account" className="secondary">Settings</Link></li>
                                     <li><button onClick={signOut}>Logout</button></li>
                                 </ul>
                             </details>
