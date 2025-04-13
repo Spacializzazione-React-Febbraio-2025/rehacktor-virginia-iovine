@@ -1,6 +1,7 @@
 import { useState, useEffect, useContext } from "react";
 import supabase from "../../supabase/supabase-client";
 import SessionContext from "../../context/SessionContext";
+import Avatar from "../../components/Avatar";
 
 export default function AccountPage() {
     const { session } = useContext(SessionContext);
@@ -9,6 +10,7 @@ export default function AccountPage() {
     const [username, setUsername] = useState(null);
     const [first_name, setFirstname] = useState(null);
     const [last_name, setLastname] = useState(null);
+    const [avatar_url, setAvatarUrl] = useState(null);
 
     useEffect(() => {
         if (!session) return;
@@ -32,6 +34,7 @@ export default function AccountPage() {
                     setUsername(data.username);
                     setFirstname(data.first_name);
                     setLastname(data.last_name);
+                    setAvatarUrl(data.avatar_url);
                 }
                 setLoading(false);
             }
@@ -44,7 +47,7 @@ export default function AccountPage() {
         };
     }, [session]);
 
-    const updateProfile = async (event) => {
+    const updateProfile = async (event, avatar_url) => {
         event.preventDefault();
         setLoading(true);
         const { user } = session;
@@ -54,10 +57,13 @@ export default function AccountPage() {
             username,
             first_name,
             last_name,
+            avatar_url,
             updated_at: new Date(),
         };
 
         const { error } = await supabase.from("profiles").upsert(updates);
+
+        setAvatarUrl(avatar_url);
 
         if (error) {
             alert(error.message);
@@ -76,6 +82,13 @@ export default function AccountPage() {
         <div className="max-w-lg mx-auto mt-10 p-6 bg-gray-900 text-white rounded-lg shadow-md mb-8">
             <h2 className="text-2xl font-semibold mb-6">Profile Settings</h2>
             <form onSubmit={updateProfile} className="form-widget">
+                <Avatar
+                url={avatar_url}
+                size={150}
+                onUpload={(event, url) => {
+                    updateProfile(event, url);
+                }}
+                />
                 <div className="mb-4">
                     <label htmlFor="email" className="block text-gray-300">Email:</label>
                     <input
