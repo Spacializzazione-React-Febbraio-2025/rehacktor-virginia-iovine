@@ -60,6 +60,7 @@ export default function Sidebar() {
                                 <summary>Hey 👋🏻  {session?.user.user_metadata.first_name} </summary>
                                 <ul dir="rtl">
                                     <li><Link to="/account" className="secondary">Settings</Link></li>
+                                    <li><Link to="/profile" className="secondary">Preferiti</Link></li>
                                     <li><button onClick={signOut}>Logout</button></li>
                                 </ul>
                             </details>
