@@ -1,42 +1,80 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import CardGame from "../../components/CardGame";
 
+const API_KEY = "976e3cf4b3b44a799e4b1a6cd1d4e01f";
+const PAGE_SIZE = 20;
+
 export default function HomePage() {
-    
-const [data, setData] = useState(null);
-const [error, setError] = useState(null);
+  const [games, setGames] = useState([]);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-const initialUrl = "https://api.rawg.io/api/games?key=976e3cf4b3b44a799e4b1a6cd1d4e01f&dates=2024-01-01,2024-12-31&page=1";
+  const observer = useRef();
+  const lastGameRef = useRef();
 
-const load = async () => {
+  useEffect(() => {
+    loadGames();
+  }, [page]);
+
+  const loadGames = async () => {
+    if (isLoading || !hasMore) return;
+    setIsLoading(true);
+
     try {
-      const response = await fetch(initialUrl);
-      if (!response.ok) {
-        throw new Error(response.statusText);
-      }
-      const json = await response.json();
-      setData(json);
-    } catch (error) {
-      setError(error.message);
-      setData(null);
+      const res = await fetch(
+        `https://api.rawg.io/api/games?key=${API_KEY}&dates=2024-01-01,2024-12-31&page=${page}&page_size=${PAGE_SIZE}`
+      );
+      if (!res.ok) throw new Error("Errore nel caricamento dei giochi");
+      const json = await res.json();
+      setGames((prev) => [...prev, ...json.results]);
+      setHasMore(!!json.next);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
+  // Pgination con scroll infinito
   useEffect(() => {
-    load();
-  }, []);
-    
+    if (isLoading) return;
+    if (observer.current) observer.current.disconnect();
 
-    return (
-        <>
-          <h1 className="text-2xl font-bold mb-4">Homepage</h1>
-          <div className="grid grid-cols-4 gap-4">
-            {error && <article className="col-span-full text-red-500">{error}</article>}
-            {data &&
-              data.results.map((game) => (
-                <CardGame key={game.id} game={game} />
-              ))}
-          </div>
-        </>
-      );
+    observer.current = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting && hasMore) {
+        setPage((prev) => prev + 1);
+      }
+    });
+
+    if (lastGameRef.current) {
+      observer.current.observe(lastGameRef.current);
+    }
+  }, [isLoading, hasMore]);
+
+  return (
+    <div className="container mx-auto p-6">
+      <h1 className="text-2xl font-bold mb-4">Homepage</h1>
+
+      {error && <div className="text-red-500 mb-4">{error}</div>}
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        {games.map((game, index) => {
+          const isLast = index === games.length - 1;
+          return (
+            <div key={game.id} ref={isLast ? lastGameRef : null}>
+              <CardGame game={game} />
+            </div>
+          );
+        })}
+      </div>
+
+      {isLoading && (
+        <div className="text-center mt-6 text-lime-400 font-semibold animate-pulse">
+          Caricamento giochi...
+        </div>
+      )}
+    </div>
+  );
 }
