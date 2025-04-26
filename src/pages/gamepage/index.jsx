@@ -1,36 +1,22 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useParams } from "react-router";
 import ToggleFavorite from "../../components/ToggleFavorite";
 import Chatbox from "../../components/Chatbox";
+import useFetchSolution from "../../hook/useFetchSolution";
 
 export default function GamePage() {
   const { game_id } = useParams();
-  const [data, setData] = useState(null);
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(true);
 
   const initialUrl = `https://api.rawg.io/api/games/${game_id}?key=976e3cf4b3b44a799e4b1a6cd1d4e01f`;
-
-  const load = async () => {
-    try {
-      const response = await fetch(initialUrl);
-      if (!response.ok) throw new Error(response.statusText);
-      const json = await response.json();
-      setData(json);
-      setLoading(false);
-    } catch (error) {
-      setError(error.message);
-      setData(null);
-      setLoading(false);
-    }
-  };
+  const { data, loading, error, updateUrl } = useFetchSolution(initialUrl);
 
   useEffect(() => {
-    load();
-  }, [game_id]);
+    updateUrl(`https://api.rawg.io/api/games/${game_id}?key=976e3cf4b3b44a799e4b1a6cd1d4e01f`);
+  }, [game_id, updateUrl]);
 
   if (loading) return <p className="text-center text-lg">Loading...</p>;
   if (error) return <p className="text-center text-red-500">Error: {error}</p>;
+  if (!data) return null;
 
   return (
     <div className="relative container mx-auto p-6">

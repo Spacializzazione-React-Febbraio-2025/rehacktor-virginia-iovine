@@ -6,37 +6,14 @@
 // Con FALLBACK E MESSAGGI DI ERRORE/VUOTO rendiamo visibile un messaggio di errore o una notifica se ci sono errori o nessun dato disponibile.
 
 
-import { useState, useEffect } from "react";
-import { Link } from 'react-router';
+import { Link } from "react-router";
+import useFetchSolution from "../hook/useFetchSolution";
 
-export default function GenresDropdown() {
-    const [genres, setGenres] = useState(null);
-    const [error, setError] = useState(null);
-    const [loading, setLoading] = useState(true);
-
+export default function GenresDropdown({ closeDrawer }) {
     const initialUrl = "https://api.rawg.io/api/genres?key=976e3cf4b3b44a799e4b1a6cd1d4e01f";
 
-    const load = async () => {
-        try {
-            const response = await fetch(initialUrl);
-            if (!response.ok) {
-                throw new Error(response.statusText);
-            }
-            const json = await response.json();
-            setGenres(json.results);
-            setLoading(false);
-        } catch (error) {
-            setError(error.message);
-            setGenres(null);
-            setLoading(false);
-        }
-    };
+    const { data, loading, error } = useFetchSolution(initialUrl);
 
-    useEffect(() => {
-        load();
-    }, []);
-
-    // Se sta caricando, mostra un messaggio di loading
     if (loading) {
         return <p>Loading...</p>;
     }
@@ -44,20 +21,20 @@ export default function GenresDropdown() {
     return (
         <details className="dropdown">
             <summary>Genres</summary>
-            {error && <small className="text-red-500">{error}</small>} {/* errore, se c'è */}
+            {error && <small className="text-red-500">{error}</small>}
             <ul className="p-2">
-                {genres?.length > 0 ? (
-                    genres.map((genre) => (
+                {data?.results?.length > 0 ? (
+                    data.results.map((genre) => (
                         <li key={genre.id}>
-                            {/* Link per genere */}
-                            <Link to={`/games/${genre.slug}`}>{genre.name}</Link>
+                            <Link to={`/games/${genre.slug}`} onClick={closeDrawer}>
+                                {genre.name}
+                            </Link>
                         </li>
                     ))
                 ) : (
-                    <li>No genres available</li> // Fallback se non ci sono generi
+                    <li>No genres available</li>
                 )}
             </ul>
         </details>
     );
-    
 }

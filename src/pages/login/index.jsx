@@ -50,6 +50,15 @@ export default function LoginPage() {
                 await new Promise((resolve) => setTimeout(resolve, 1000));
                 navigate("/");
 
+                // forzatura ScrollToBottom
+                setTimeout(() => {
+                    window.scrollTo({
+                      top: document.body.scrollHeight,
+                      behavior: "smooth",
+                    });
+                  }, 100);
+                  
+
                 // per aggiornare subito dopo l'inserimento dei dati di login lo stato della sidebar
                 await getSession();
             }

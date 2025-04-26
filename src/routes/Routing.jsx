@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router";
-import HomePage from "../pages/HomePage";
+import HomePage from "../pages/homepage";
 import Layout from "../layout/Layout";
 import ErrorPage from '../pages/error';
 import GenrePage from "../pages/genrepage";
@@ -9,10 +9,12 @@ import RegisterPage from "../pages/register";
 import LoginPage from "../pages/login";
 import AccountPage from "../pages/account";
 import ProfilePage from "../pages/profile";
+import ScrollToBottom from "../components/ScrollToBottom";
 
 export function Routing() {
     return (
         <BrowserRouter>
+        <ScrollToBottom />
         <Routes>
             <Route element={<Layout />}>
             <Route path="/" element={<HomePage />} />
