@@ -14,7 +14,7 @@ export default function CardGame({ game }) {
         <small>{genres}</small>
         <p>{game.released}</p>
         <Link to={`/games/${game.slug}/${game.id}`} className="game-link">
-        <button>Visita il gioco</button>
+        <button className="btn bg-lime-400 text-white hover:bg-lime-500 hover:scale-105 transition-transform duration-200 p-2 m-2">Visita il gioco</button>
         </Link>
         
         </article>
